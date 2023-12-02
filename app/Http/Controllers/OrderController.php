@@ -12,7 +12,7 @@ class OrderController extends Controller
     {
         $user = auth()->user()->id;
 
-        $orders = Order::where('user_id', $user)->with('deliveries.products')->paginate(5);
+        $orders = Order::where('user_id', $user)->with('deliveries.products')->paginate(4);
 
         return view('orders.index', compact('orders'));
     }

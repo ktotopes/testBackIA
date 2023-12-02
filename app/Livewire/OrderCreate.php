@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enum\OrderStatus;
 use App\Models\Delivery;
 use App\Models\Order;
 use App\Models\Product;
@@ -97,10 +98,12 @@ class OrderCreate extends Component
 
         $order = new Order([
             'user_id' => auth()->user()->id,
+            'status' => OrderStatus::randomValue(),
         ]);
         $order->save();
 
         foreach ($this->deliveries as $delivery) {
+
             $d = new Delivery([
                 'order_id' => $order->id,
                 'from_address' => $delivery['from_address'],

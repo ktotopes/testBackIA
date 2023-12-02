@@ -21,9 +21,6 @@
                         <x-nav-link href="{{ route('orders.index') }}" :active="request()->routeIs('orders.index')">
                             {{ __('Ваши заказы') }}
                         </x-nav-link>
-                        <x-nav-link href="{{ route('admin.orders.index') }}" :active="request()->routeIs('admin.orders.index')">
-                            {{ __('Заказы пользователей') }}
-                        </x-nav-link>
                 </div>
             </div>
 

@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->nullable()->constrained('users');
 
 
-            $table->string('status')->default(\App\Enum\OrderStatus::FORMED->value);
+            $table->string('status')->default('formed');
             $table->timestamps();
         });
     }
