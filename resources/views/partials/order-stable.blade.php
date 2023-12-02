@@ -1,28 +1,29 @@
 @if(count($orders))
     @foreach($orders as $order)
-        @foreach($order->deliveries as $delivery)
-            <div class="p-5">
-                <table class="w-full border-x border-b">
-                    <thead>
-                    <tr>
-                        <th class="font-bold p-2 border-b border-l border-indigo-700 text-left bg-indigo-700 text-white">
-                            Номер доставки
-                        </th>
-                        <th class="font-bold p-2 border-b border-l text-left border-indigo-700 bg-indigo-700 text-white">
-                            Статус
-                        </th>
-                        <th class="font-bold py-2 px-4 border-b border-l text-left border-indigo-700 bg-indigo-700 text-white">
-                            Стоимость
-                        </th>
-                        <th class="font-bold py-2 px-4 border-b border-l text-left border-indigo-700 bg-indigo-700 text-white">
-                            Вес
-                        </th>
-                        <th class="font-bold py-2 px-4 border-b border-l text-left border-indigo-700 bg-indigo-700 text-white">
-                            Дата доставки
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
+        <div class="py-3">
+            <h1>Order #{{$order->id}}</h1>
+            <table class="w-full border-x border-b">
+                <thead>
+                <tr>
+                    <th class="font-bold p-2 border-b border-l border-indigo-700 text-left bg-indigo-700 text-white">
+                        Номер доставки
+                    </th>
+                    <th class="font-bold p-2 border-b border-l text-left border-indigo-700 bg-indigo-700 text-white">
+                        Статус
+                    </th>
+                    <th class="font-bold py-2 px-4 border-b border-l text-left border-indigo-700 bg-indigo-700 text-white">
+                        Стоимость
+                    </th>
+                    <th class="font-bold py-2 px-4 border-b border-l text-left border-indigo-700 bg-indigo-700 text-white">
+                        Вес
+                    </th>
+                    <th class="font-bold py-2 px-4 border-b border-l text-left border-indigo-700 bg-indigo-700 text-white">
+                        Дата доставки
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($order->deliveries as $delivery)
                     <tr class="odd:bg-gray-100 hover:!bg-stone-200">
                         <td class="p-2 border-b border-l text-left">
                             @if(!auth()->user()->isAdmin())
@@ -49,12 +50,14 @@
                         </td>
                         <td class="p-2 border-b border-l text-left">{{$delivery->price}}</td>
                         <td class="p-2 border-b border-l text-left">{{$delivery->weights}}</td>
-                        <td class="py-2 px-4 border-b border-l text-left">{{$delivery->should_delivered}}</td>
+                        <td class="py-2 px-4 border-b border-l text-left">
+                            {{ \Illuminate\Support\Carbon::parse($delivery->should_delivered)->format('d-m-Y H:i') }}
+                        </td>
                     </tr>
-                    </tbody>
-                </table>
-            </div>
-        @endforeach
+                @endforeach
+                </tbody>
+            </table>
+        </div>
     @endforeach
     {{$orders->links()}}
 @else

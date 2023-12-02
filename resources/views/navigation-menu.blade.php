@@ -15,12 +15,12 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                        <x-nav-link href="{{ route('orders.create') }}" :active="request()->routeIs('orders.create')">
-                            {{ __('Сделать заказ') }}
-                        </x-nav-link>
-                        <x-nav-link href="{{ route('orders.index') }}" :active="request()->routeIs('orders.index')">
-                            {{ __('Ваши заказы') }}
-                        </x-nav-link>
+                    <x-nav-link href="{{ route('orders.create') }}" :active="request()->routeIs('orders.create')">
+                        {{ __('Сделать заказ') }}
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('orders.index') }}" :active="request()->routeIs('orders.index')">
+                        {{ __('Ваши заказы') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -81,6 +81,9 @@
                 @endif
 
                 <!-- Settings Dropdown -->
+                @if(auth()->user()->is_admin == 1)
+                    <a href="{{route('admin.orders.index')}}">Админка</a>
+                @endif
                 <div class="ms-3 relative">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
@@ -91,11 +94,7 @@
                                          src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}"/>
                                 </button>
                             @else
-                                @if(auth()->user()->is_admin == 1)
-                                    <span>
-                                  <a href="{{route('admin.orders.index')}}">Админка</a>
-                                    </span>
-                                @endif
+
                                 <span class="inline-flex rounded-md">
                                     <button type="button"
                                             class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">

@@ -14,7 +14,7 @@ class OrderCreate extends Component
 {
     public array $deliveries = [];
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'deliveries.*.from_address' => ['required', 'string', new AddressRule()],
@@ -32,8 +32,7 @@ class OrderCreate extends Component
         ];
     }
 
-    private
-    array $deliveryTemplate = [
+    private array $deliveryTemplate = [
         'order_id' => null,
 
         'from_address' => '',
@@ -58,33 +57,35 @@ class OrderCreate extends Component
         'products' => [],
     ];
 
-    private
-    array $productTemplate = [
+    private array $productTemplate = [
         'delivery_id' => null,
         'name' => '',
         'weight' => '',
         'quantity' => '',
     ];
 
-    public
-    function mount(): void
+    public function mount(): void
     {
         $this->addNewDelivery();
     }
 
-    public
-    function updated(): void
+    public function updated(): void
     {
         foreach ($this->deliveries as $key => $delivery) {
             if ($fromAddressString = $delivery['from_address']) {
-                $this->deliveries[$key]['from_addresses'] = $this->loadAddressesFromApi($fromAddressString);
+                $fromAddresses = $this->loadAddressesFromApi($fromAddressString);
+
+                $this->deliveries[$key]['from_addresses'] = count($fromAddresses) ? $fromAddresses : $this->deliveries[$key]['from_addresses'];
                 $this->deliveries[$key]['from_coordinates'] = $this->parseCoordinates($this->deliveries[$key]['from_addresses']);
             }
 
             if ($toAddressString = $delivery['to_address']) {
-                $this->deliveries[$key]['to_addresses'] = $this->loadAddressesFromApi($toAddressString);
+                $toAddresses = $this->loadAddressesFromApi($toAddressString);
+
+                $this->deliveries[$key]['to_addresses'] = count($toAddresses) ? $toAddresses : $this->deliveries[$key]['to_addresses'];
                 $this->deliveries[$key]['to_coordinates'] = $this->parseCoordinates($this->deliveries[$key]['to_addresses']);;
             }
+
             if ($delivery['from_coordinates'] && $delivery['to_coordinates']) {
                 $this->deliveries[$key]['price'] = $this->calcPrice($delivery);
                 $this->deliveries[$key]['weights'] = $this->calcWeight($delivery);
@@ -133,32 +134,27 @@ class OrderCreate extends Component
         $this->redirectRoute('orders.show', ['order' => $order->id]);
     }
 
-    public
-    function addDelivery(): void
+    public function addDelivery(): void
     {
         $this->addNewDelivery();
     }
 
-    public
-    function addProduct($deliveryIndex): void
+    public function addProduct($deliveryIndex): void
     {
         $this->deliveries[$deliveryIndex]['products'][] = $this->productTemplate;
     }
 
-    public
-    function deleteAddress(int $key): void
+    public function deleteAddress(int $key): void
     {
         array_splice($this->deliveries, $key, 1);
     }
 
-    public
-    function render()
+    public function render()
     {
         return view('livewire.order-create');
     }
 
-    private
-    function loadAddressesFromApi(string $address): array
+    private function loadAddressesFromApi(string $address): array
     {
         $response = Http::get('https://geocode.maps.co/search', ['q' => $address]);
 
@@ -169,16 +165,14 @@ class OrderCreate extends Component
         return $response->json();
     }
 
-    private
-    function addNewDelivery(): void
+    private function addNewDelivery(): void
     {
         $delivery = [...$this->deliveryTemplate, ...['products' => [$this->productTemplate]]];
 
         $this->deliveries[] = $delivery;
     }
 
-    private
-    function parseCoordinates(array $data): string
+    private function parseCoordinates(array $data): string
     {
         if (!count($data)) {
             return '';
@@ -187,16 +181,14 @@ class OrderCreate extends Component
         return $data[0]['lat'] . ', ' . $data[0]['lon'];
     }
 
-    private
-    function calcDistance(array $delivery): float
+    private function calcDistance(array $delivery): float
     {
         return $this->getDistanceFromLatLonInKm(
             [...explode(', ', $delivery['from_coordinates']), ...explode(', ', $delivery['to_coordinates'])]
         );
     }
 
-    private
-    function getDistanceFromLatLonInKm(): float
+    private function getDistanceFromLatLonInKm(): float
     {
         [$lat1, $lon1, $lat2, $lon2] = func_get_args()[0];
 
@@ -211,8 +203,7 @@ class OrderCreate extends Component
         return $r * $c;
     }
 
-    private
-    function calcPrice(array $delivery): float
+    private function calcPrice(array $delivery): float
     {
         $distance = $this->calcDistance($delivery);
         $sum = 0;
@@ -225,8 +216,7 @@ class OrderCreate extends Component
         return $sum;
     }
 
-    private
-    function calcWeight(array $delivery): float
+    private function calcWeight(array $delivery): float
     {
         $weights = 0;
 

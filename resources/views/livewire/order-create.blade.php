@@ -6,9 +6,12 @@
                     <div class="w-1/2 px-5">
                         <h3 class="block text-sm font-medium leading-6 text-gray-900">Данные отправки</h3>
 
-                        <x-input list="fromAddresses{{ $key }}"
-                                 wire:model.live.debounce.500ms="deliveries.{{ $key }}.from_address"
-                                 class="w-full my-2" placeholder="Адрес"/>
+                        <x-input
+                            list="fromAddresses{{ $key }}"
+                            wire:model.live.debounce.500ms="deliveries.{{ $key }}.from_address"
+                            class="w-full my-2"
+                            placeholder="Адрес"
+                        />
                         @if(count($delivery['from_addresses']) && $delivery['from_addresses'][0]['display_name'] != $delivery['from_address'])
                             <datalist id="fromAddresses{{ $key }}">
                                 @foreach($delivery['from_addresses'] as $address)

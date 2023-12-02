@@ -11,6 +11,10 @@ class Delivery extends Model
 {
     protected $guarded = [];
 
+    protected $casts = [
+        'should_delivered' => 'datetime:d-m-Y H:i'
+    ];
+
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
