@@ -25,3 +25,6 @@ class AddressRule implements ValidationRule, DataAwareRule
         return $this;
     }
 }
+
+
+//сын собака
